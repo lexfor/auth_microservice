@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package lab;
+
+service UsersService {
+  rpc CreateUser(createUserRequest) returns (createUserResponse) {}
+  rpc GetUser(getUserRequest) returns (getUserResponse) {}
+}
+
+message createUserRequest {
+  string name = 1;
+  string birthday = 2;
+  string gender = 3;
+  string login = 4;
+  string password = 5;
+}
+
+message createUserResponse {
+  string id = 1;
+  string login = 2;
+  string password = 3;
+}
+
+message getUserRequest {
+  string login = 1;
+  string password = 2;
+  string role = 3;
+}
+
+message getUserResponse {
+  string id = 1;
+  string login = 2;
+  string password = 3;
+}
+
+service PatientService {
+  rpc CreatePatient(createPatientRequest) returns (createPatientResponse) {}
+  rpc GetPatientByUserID(getPatientByUserIDRequest) returns (getPatientByUserIDResponse) {}
+  rpc GetPatientByID(getPatientByIDRequest) returns (getPatientByIDResponse) {}
+}
+
+message createPatientRequest {
+  string mail = 1;
+  string name = 2;
+  string birthday = 3;
+  string gender = 4;
+  string userID = 5;
+}
+
+message createPatientResponse {
+  string id = 1;
+  string name = 2;
+  string birthday = 3;
+  string gender = 4;
+  string mail = 5;
+  string userID = 6;
+}
+
+message getPatientByUserIDRequest {
+  string userID = 1;
+}
+
+message getPatientByUserIDResponse {
+  string id = 1;
+  string name = 2;
+  string birthday = 3;
+  string gender = 4;
+  string mail = 5;
+  string userID = 6;
+}
+
+message getPatientByIDRequest {
+  string userID = 1;
+}
+
+message getPatientByIDResponse {
+  string id = 1;
+  string name = 2;
+  string birthday = 3;
+  string gender = 4;
+  string mail = 5;
+  string userID = 6;
+}
