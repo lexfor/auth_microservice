@@ -107,12 +107,14 @@ export class AuthController implements OnModuleInit {
     @Body(ValidationPipe) loginUserDto: LoginUserDto,
     @Query('role', new DefaultValuePipe(roles.patient)) role: string,
   ): Promise<IToken> {
+    console.log(loginUserDto);
     const user: IUser = await lastValueFrom(
       this.userService.getUser({
         ...loginUserDto,
         role: role,
       }),
     );
+    console.log(user);
     if (user.id === null) {
       throw new HttpException(
         'wrong login or password',
