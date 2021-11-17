@@ -64,6 +64,7 @@ export class AuthController implements OnModuleInit {
   async registerUser(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<IPatient> {
+    console.log(createUserDto);
     const foundedUser: IUser = await lastValueFrom(
       this.userService.getUser({
         login: createUserDto.login,
@@ -71,6 +72,7 @@ export class AuthController implements OnModuleInit {
         role: roles.patient,
       }),
     );
+    console.log(foundedUser);
     if (foundedUser.id === null) {
       throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
     }
