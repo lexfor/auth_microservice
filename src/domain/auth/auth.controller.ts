@@ -38,7 +38,7 @@ export class AuthController implements OnModuleInit {
   @Client({
     transport: Transport.GRPC,
     options: {
-      url: 'ec2-18-217-138-210.us-east-2.compute.amazonaws.com',
+      url: 'ec2-18-217-138-210.us-east-2.compute.amazonaws.com:3000',
       package: 'lab',
       protoPath: join(__dirname, '../../../grpc/grpc.proto'),
     },
