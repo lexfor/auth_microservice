@@ -14,7 +14,11 @@ import config from '../../infrastructure/config';
       load: [config],
     }),
     JwtModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule.forRoot({
+          load: [config],
+        }),
+      ],
       inject: [ConfigService],
       useFactory: getJwtConfig,
     }),
