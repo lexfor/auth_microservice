@@ -73,7 +73,7 @@ export class AuthController implements OnModuleInit {
       }),
     );
     console.log(foundedUser);
-    if (foundedUser.id === null) {
+    if (foundedUser.id !== null) {
       throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
     }
     const user: IUser = await lastValueFrom(
