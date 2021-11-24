@@ -1,4 +1,4 @@
-import { getParameter } from './getParameter';
+import { getParameter } from './aws/getParameter';
 
 export default async () => ({
   SECRET_KEY: await getParameter('SECRET_KEY'),

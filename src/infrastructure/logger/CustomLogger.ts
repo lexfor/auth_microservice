@@ -1,15 +1,17 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
+import { sendFile } from '../aws/sendS3File';
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
+  private readonly fileName;
+  private readonly filePath;
   private readonly fd: number;
   constructor(name = 'Module') {
     super();
-    this.fd = fs.openSync(
-      `./logs/Source:${name}StartDate:${new Date().toISOString()}`,
-      'a',
-    );
+    this.fileName = `Source:${name}StartDate:${new Date().toISOString()}`;
+    this.filePath = `./logs/`;
+    this.fd = fs.openSync(`${this.filePath}${this.fileName}`, 'a');
   }
 
   log(message: any, ...optionalParams: any[]) {
@@ -18,11 +20,12 @@ export class CustomLogger extends ConsoleLogger {
       `Logs: ${message}\n Module: ${optionalParams.toString()}\n`,
     );
   }
-  error(message: any, ...optionalParams: any[]) {
+  async error(message: any, ...optionalParams: any[]) {
     fs.writeSync(
       this.fd,
       `Error: ${message}\n Module: ${optionalParams.toString()}\n`,
     );
+    await sendFile(this.fileName, this.filePath);
   }
   warn(message: any, ...optionalParams: any[]) {
     fs.writeSync(
