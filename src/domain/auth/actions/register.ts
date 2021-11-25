@@ -1,9 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { AuthConfig } from '../../../infrastructure/configs/cognito.config';
-import {
-  CognitoUser,
-  CognitoUserPool,
-} from 'amazon-cognito-identity-js';
+import { CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 
@@ -35,7 +32,13 @@ export class Register {
           }
         },
       );
-      console.log(this.userPool.getCurrentUser());
+      const userData = {
+        Username: createUserDto.login,
+        Pool: this.userPool,
+      };
+
+      const newUser = new CognitoUser(userData);
+      console.log(newUser.getUsername());
     });
   }
 }
