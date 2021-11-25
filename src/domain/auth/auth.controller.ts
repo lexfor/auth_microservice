@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   DefaultValuePipe,
@@ -18,7 +19,6 @@ import { Client, ClientGrpc, Transport } from '@nestjs/microservices';
 import { IUserService } from './interfaces/users.service.interface';
 import { IPatientService } from './interfaces/patients.service.interface';
 import { ICreatePatientMessage } from './interfaces/create-patient-message.interface';
-import { IToken } from './interfaces/token.interface';
 import { lastValueFrom } from 'rxjs';
 import { join } from 'path';
 import { IPatientMessage } from './interfaces/patient-message.interface';
@@ -31,6 +31,8 @@ import {
 } from '@nestjs/swagger';
 import { PatientSwagger } from './interfaces/patient-swagger';
 import { TokenSwagger } from './interfaces/token-swagger';
+import { CognitoUserSession } from 'amazon-cognito-identity-js';
+import { Register } from './actions/register';
 
 @ApiTags('Users')
 @Controller('api/auth')
@@ -47,7 +49,10 @@ export class AuthController implements OnModuleInit {
   private userService: IUserService;
   private patientService: IPatientService;
 
-  constructor(private readonly loginClass: Login) {}
+  constructor(
+    private readonly loginClass: Login,
+    private readonly registerClass: Register,
+  ) {}
 
   onModuleInit() {
     this.userService = this.client.getService<IUserService>('UsersService');
@@ -61,18 +66,21 @@ export class AuthController implements OnModuleInit {
   })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async registerUser(
-    @Body(ValidationPipe) createUserDto: CreateUserDto,
-  ): Promise<IPatient> {
-    console.log(createUserDto);
-    const foundedUser: IUser = await lastValueFrom(
+  async registerUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    try {
+      const result = await this.registerClass.register(createUserDto);
+      console.log(result);
+      return result;
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+    /*const foundedUser: IUser = await lastValueFrom(
       this.userService.getUser({
         login: createUserDto.login,
         password: createUserDto.password,
         role: roles.patient,
       }),
     );
-    console.log(foundedUser);
     if (foundedUser.id !== null) {
       throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
     }
@@ -96,7 +104,7 @@ export class AuthController implements OnModuleInit {
       birthday: patient.birthday,
       gender: patient.gender,
       user_id: patient.userID,
-    };
+    };*/
   }
 
   @ApiAcceptedResponse({
@@ -108,21 +116,13 @@ export class AuthController implements OnModuleInit {
   async getUserByLogin(
     @Body(ValidationPipe) loginUserDto: LoginUserDto,
     @Query('role', new DefaultValuePipe(roles.patient)) role: string,
-  ): Promise<IToken> {
-    console.log(loginUserDto);
-    const user: IUser = await lastValueFrom(
-      this.userService.getUser({
-        ...loginUserDto,
-        role: role,
-      }),
-    );
-    console.log(user);
-    if (user.id === null) {
-      throw new HttpException(
-        'wrong login or password',
-        HttpStatus.BAD_REQUEST,
-      );
+  ): Promise<CognitoUserSession> {
+    try {
+      const result = await this.loginClass.login(loginUserDto);
+      console.log(result);
+      return result;
+    } catch (e) {
+      throw new BadRequestException(e.message);
     }
-    return await this.loginClass.login(user);
   }
 }

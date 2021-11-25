@@ -5,6 +5,8 @@ import { grpcClientOptions } from './grpc-client.options';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CustomLogger } from './infrastructure/logger/CustomLogger';
 
+global['fetch'] = require('node-fetch');
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new CustomLogger(),

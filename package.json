@@ -31,6 +31,7 @@
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.1.4",
+    "amazon-cognito-identity-js": "^5.2.3",
     "aws-sdk": "^2.1031.0",
     "cache-manager": "^3.6.0",
     "class-transformer": "^0.4.0",
@@ -40,7 +41,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.1.6",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

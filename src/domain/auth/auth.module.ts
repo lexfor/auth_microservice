@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from '../../infrastructure/configs/jwt.config';
 import { JwtStrategy } from '../../infrastructure/strategies/jwt.strategy';
 import config from '../../infrastructure/config';
+import { AuthConfig } from '../../infrastructure/configs/cognito.config';
+import { Register } from './actions/register';
 
 @Module({
   imports: [
@@ -25,6 +27,6 @@ import config from '../../infrastructure/config';
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [Login, JwtStrategy],
+  providers: [Login, Register, JwtStrategy, AuthConfig],
 })
 export class AuthModule {}
