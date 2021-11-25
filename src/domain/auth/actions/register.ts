@@ -16,8 +16,6 @@ export class Register {
     private readonly config: ConfigService,
     private readonly authConfig: AuthConfig,
   ) {
-    console.log(this.authConfig.userPoolId);
-    console.log(this.authConfig.clientId);
     this.userPool = new CognitoUserPool({
       UserPoolId: this.authConfig.userPoolId,
       ClientId: this.authConfig.clientId,
