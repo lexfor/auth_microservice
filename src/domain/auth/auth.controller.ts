@@ -70,7 +70,6 @@ export class AuthController implements OnModuleInit {
         login: createUserDto.login,
         password: createUserDto.password,
       });
-      console.log(user.getAccessToken().payload);
       const userID: string = user.getAccessToken().payload.username;
       const createPatientMessage: ICreatePatientMessage = {
         name: createUserDto.name,
