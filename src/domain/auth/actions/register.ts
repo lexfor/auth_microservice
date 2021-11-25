@@ -18,7 +18,7 @@ export class Register {
   }
 
   async register(createUserDto: CreateUserDto): Promise<CognitoUser> {
-    return new Promise((resolve, reject) => {
+    const result: CognitoUser = await new Promise((resolve, reject) => {
       this.userPool.signUp(
         createUserDto.login,
         createUserDto.password,
@@ -32,13 +32,16 @@ export class Register {
           }
         },
       );
-      const userData = {
-        Username: createUserDto.login,
-        Pool: this.userPool,
-      };
-
-      const newUser = new CognitoUser(userData);
-      console.log(newUser.getUsername());
     });
+    console.log(this.userPool.getCurrentUser());
+    console.log(result);
+    const userData = {
+      Username: createUserDto.login,
+      Pool: this.userPool,
+    };
+
+    const newUser = new CognitoUser(userData);
+    console.log(newUser.getUsername());
+    return result;
   }
 }
