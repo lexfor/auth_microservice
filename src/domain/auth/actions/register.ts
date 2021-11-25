@@ -22,7 +22,7 @@ export class Register {
 
   async register(createUserDto: CreateUserDto): Promise<CognitoUser> {
     return new Promise((resolve, reject) => {
-      return this.userPool.signUp(
+      this.userPool.signUp(
         createUserDto.login,
         createUserDto.password,
         [],
@@ -35,6 +35,7 @@ export class Register {
           }
         },
       );
+      console.log(this.userPool.getCurrentUser());
     });
   }
 }
