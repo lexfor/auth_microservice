@@ -2,18 +2,15 @@ import {
   BadRequestException,
   Body,
   Controller,
-  DefaultValuePipe,
   HttpCode,
   HttpStatus,
   OnModuleInit,
   Post,
-  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Login } from './actions/login';
-import { roles } from '../../infrastructure/constants';
 import { Client, ClientGrpc, Transport } from '@nestjs/microservices';
 import { IUserService } from './interfaces/users.service.interface';
 import { IPatientService } from './interfaces/patients.service.interface';
