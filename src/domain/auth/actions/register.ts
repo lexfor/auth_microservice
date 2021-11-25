@@ -27,7 +27,7 @@ export class Register {
       return this.userPool.signUp(
         createUserDto.login,
         createUserDto.password,
-        [new CognitoUserAttribute({ Name: 'custom:id', Value: uuidv1() })],
+        [],
         null,
         (error, result) => {
           if (!result) {
