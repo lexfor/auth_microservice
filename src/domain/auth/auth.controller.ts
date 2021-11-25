@@ -4,7 +4,6 @@ import {
   Controller,
   DefaultValuePipe,
   HttpCode,
-  HttpException,
   HttpStatus,
   OnModuleInit,
   Post,
@@ -22,7 +21,6 @@ import { ICreatePatientMessage } from './interfaces/create-patient-message.inter
 import { lastValueFrom } from 'rxjs';
 import { join } from 'path';
 import { IPatientMessage } from './interfaces/patient-message.interface';
-import { IUser } from './interfaces/user.interface';
 import { IPatient } from './interfaces/patient.interface';
 import {
   ApiAcceptedResponse,
@@ -66,45 +64,37 @@ export class AuthController implements OnModuleInit {
   })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async registerUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  async registerUser(
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+  ): Promise<IPatient> {
     try {
-      const result = await this.registerClass.register(createUserDto);
-      console.log(result);
-      return result;
+      await this.registerClass.register(createUserDto);
+      const user: CognitoUserSession = await this.loginClass.login({
+        login: createUserDto.login,
+        password: createUserDto.password,
+      });
+      const userID: string = user.getAccessToken().payload.username;
+      const createPatientMessage: ICreatePatientMessage = {
+        name: createUserDto.name,
+        mail: createUserDto.login,
+        birthday: createUserDto.birthday,
+        gender: createUserDto.gender,
+        userID: userID,
+      };
+      const patient: IPatientMessage = await lastValueFrom(
+        this.patientService.createPatient(createPatientMessage),
+      );
+      return {
+        id: patient.id,
+        name: patient.name,
+        mail: patient.mail,
+        birthday: patient.birthday,
+        gender: patient.gender,
+        user_id: patient.userID,
+      };
     } catch (e) {
       throw new BadRequestException(e.message);
     }
-    /*const foundedUser: IUser = await lastValueFrom(
-      this.userService.getUser({
-        login: createUserDto.login,
-        password: createUserDto.password,
-        role: roles.patient,
-      }),
-    );
-    if (foundedUser.id !== null) {
-      throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
-    }
-    const user: IUser = await lastValueFrom(
-      this.userService.createUser(createUserDto),
-    );
-    const createPatientMessage: ICreatePatientMessage = {
-      name: createUserDto.name,
-      mail: createUserDto.login,
-      birthday: createUserDto.birthday,
-      gender: createUserDto.gender,
-      userID: user.id,
-    };
-    const patient: IPatientMessage = await lastValueFrom(
-      this.patientService.createPatient(createPatientMessage),
-    );
-    return {
-      id: patient.id,
-      name: patient.name,
-      mail: patient.mail,
-      birthday: patient.birthday,
-      gender: patient.gender,
-      user_id: patient.userID,
-    };*/
   }
 
   @ApiAcceptedResponse({
@@ -115,12 +105,10 @@ export class AuthController implements OnModuleInit {
   @HttpCode(HttpStatus.ACCEPTED)
   async getUserByLogin(
     @Body(ValidationPipe) loginUserDto: LoginUserDto,
-    @Query('role', new DefaultValuePipe(roles.patient)) role: string,
-  ): Promise<CognitoUserSession> {
+  ): Promise<string> {
     try {
       const result = await this.loginClass.login(loginUserDto);
-      console.log(result);
-      return result;
+      return result.getAccessToken().getJwtToken();
     } catch (e) {
       throw new BadRequestException(e.message);
     }

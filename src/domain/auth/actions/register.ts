@@ -1,9 +1,7 @@
 import { ConfigService } from '@nestjs/config';
-import { v1 as uuidv1 } from 'uuid';
 import { AuthConfig } from '../../../infrastructure/configs/cognito.config';
 import {
   CognitoUser,
-  CognitoUserAttribute,
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
 import { Injectable } from '@nestjs/common';
