@@ -66,10 +66,12 @@ export class AuthController implements OnModuleInit {
   ): Promise<IPatient> {
     try {
       await this.registerClass.register(createUserDto);
+      console.log('1');
       const user: CognitoUserSession = await this.loginClass.login({
         login: createUserDto.login,
         password: createUserDto.password,
       });
+      console.log('2');
       const userID: string = user.getAccessToken().payload.username;
       const createPatientMessage: ICreatePatientMessage = {
         name: createUserDto.name,
