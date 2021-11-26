@@ -1,5 +1,3 @@
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { AuthConfig } from '../../../infrastructure/configs/cognito.config';
 import {
   AuthenticationDetails,
@@ -13,11 +11,7 @@ import { LoginUserDto } from '../dto/login-user.dto';
 @Injectable()
 export class Login {
   private readonly userPool: CognitoUserPool;
-  constructor(
-    private readonly config: ConfigService,
-    private readonly jwtService: JwtService,
-    private readonly authConfig: AuthConfig,
-  ) {
+  constructor(private readonly authConfig: AuthConfig) {
     this.userPool = new CognitoUserPool({
       UserPoolId: this.authConfig.userPoolId,
       ClientId: this.authConfig.clientId,
