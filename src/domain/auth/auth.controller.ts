@@ -110,4 +110,17 @@ export class AuthController implements OnModuleInit {
       throw new BadRequestException(e.message);
     }
   }
+
+  @ApiAcceptedResponse({
+    description: 'social token',
+  })
+  @Post('social')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async getSocialUser(data) {
+    try {
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
