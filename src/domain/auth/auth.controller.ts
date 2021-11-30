@@ -1,13 +1,13 @@
 import {
   BadRequestException,
   Body,
-  Controller,
+  Controller, Get,
   HttpCode,
   HttpStatus,
   OnModuleInit,
   Post,
-  ValidationPipe,
-} from '@nestjs/common';
+  ValidationPipe
+} from "@nestjs/common";
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Login } from './actions/login';
@@ -116,7 +116,22 @@ export class AuthController implements OnModuleInit {
   })
   @Post('social')
   @HttpCode(HttpStatus.ACCEPTED)
+  async postSocialUser(data) {
+    console.log('1');
+    try {
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @ApiAcceptedResponse({
+    description: 'social token',
+  })
+  @Get('social')
+  @HttpCode(HttpStatus.OK)
   async getSocialUser(data) {
+    console.log('2');
     try {
       console.log(data);
     } catch (e) {
